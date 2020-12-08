@@ -41,9 +41,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val state by viewModel.postItemsLiveData.observeAsState(Loading)
             PostScreen(
-                uiStates = state,
+                uiStates = viewModel.postItems,
                 onItemClick = viewModel::setAsFavorite,
                 onRefresh = viewModel::getPosts
             )

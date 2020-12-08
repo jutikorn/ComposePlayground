@@ -27,23 +27,18 @@ class PostsViewModel @Inject internal constructor(
     var postItems: UiStates by mutableStateOf(Loading)
         private set
 
-    private val _postItemsLiveData: MutableLiveData<UiStates> = MutableLiveData(Loading)
-
-    val postItemsLiveData: LiveData<UiStates>
-    get() = _postItemsLiveData
-
     fun getPosts() {
         viewModelScope.launch {
-            _postItemsLiveData.value = getPostItemsUseCase.execute()
+            postItems = getPostItemsUseCase.execute()
         }
     }
 
     fun setAsFavorite(uiPost: UiPost) {
-        _postItemsLiveData.value = setPostAsFavoriteUseCase.execute(_postItemsLiveData.value!!,
+        postItems = setPostAsFavoriteUseCase.execute(postItems,
             uiPost)
     }
 
     fun removeFromFavorite(position: Int) {
-        _postItemsLiveData.value = removePostFromFavoriteUseCase.execute(_postItemsLiveData.value!!, position)
+        postItems = removePostFromFavoriteUseCase.execute(postItems, position)
     }
 }
