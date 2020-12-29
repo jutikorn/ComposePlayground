@@ -1,20 +1,20 @@
 package com.eddie.composeplayground
 
-import android.util.Log
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.eddie.composeplayground.uistates.PostAction
+import com.eddie.composeplayground.uistates.PostAction.FetchingPosts
+import com.eddie.composeplayground.uistates.PostAction.RemoveFromFavorite
+import com.eddie.composeplayground.uistates.PostAction.SetAsFavorite
 import com.eddie.composeplayground.uistates.UiStates
-import com.eddie.composeplayground.uistates.UiStates.LoadSuccess
 import com.eddie.composeplayground.uistates.UiStates.Loading
-import com.eddie.composeplayground.uistates.UiStates.UiPost
 import com.eddie.composeplayground.usecases.GetPostItemsUseCase
 import com.eddie.composeplayground.usecases.RemovePostFromFavoriteUseCase
 import com.eddie.composeplayground.usecases.SetPostAsFavoriteUseCase
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -24,21 +24,52 @@ class PostsViewModel @Inject internal constructor(
     private val removePostFromFavoriteUseCase: RemovePostFromFavoriteUseCase
 ): ViewModel() {
 
-    var postItems: UiStates by mutableStateOf(Loading)
-        private set
+    val actionFlow = MutableSharedFlow<PostAction>()
+
+    private val _mutableUiStateFlow = MutableStateFlow<UiStates>(Loading)
+    val uiStateFlow: StateFlow<UiStates>
+        get() = _mutableUiStateFlow
+
+    init {
+        handleActions()
+        getPosts()
+    }
 
     fun getPosts() {
         viewModelScope.launch {
-            postItems = getPostItemsUseCase.execute()
+            actionFlow.emit(FetchingPosts)
         }
     }
 
-    fun setAsFavorite(uiPost: UiPost) {
-        postItems = setPostAsFavoriteUseCase.execute(postItems,
-            uiPost)
+    fun setAsFavorite(position: Int) {
+        viewModelScope.launch {
+            actionFlow.emit(SetAsFavorite(position))
+        }
     }
 
     fun removeFromFavorite(position: Int) {
-        postItems = removePostFromFavoriteUseCase.execute(postItems, position)
+        viewModelScope.launch {
+            actionFlow.emit(RemoveFromFavorite(position))
+        }
+    }
+
+    private fun handleActions() {
+        viewModelScope.launch {
+            actionFlow.collect { action ->
+                when(action) {
+                    is SetAsFavorite -> {
+                        _mutableUiStateFlow.emit(setPostAsFavoriteUseCase.execute(uiStateFlow.value,
+                            action.position))
+                    }
+                    is RemoveFromFavorite -> {
+                        _mutableUiStateFlow.emit(removePostFromFavoriteUseCase.execute(uiStateFlow.value,
+                            action.position))
+                    }
+                    is FetchingPosts -> {
+                        _mutableUiStateFlow.emit(getPostItemsUseCase.execute())
+                    }
+                }
+            }
+        }
     }
 }

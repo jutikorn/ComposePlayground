@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyColumnFor
+import androidx.compose.foundation.lazy.LazyColumnForIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -15,16 +16,18 @@ import com.eddie.composeplayground.uistates.UiStates.UiPost
 @Composable
 fun PostsScreenDataLoadingSuccess(
     dataLoadedSuccess: LoadSuccess,
-    onItemClicked: (UiPost) -> Unit
+    onItemClicked: (Int) -> Unit
 ) {
     Column {
-        LazyColumnFor(
+        LazyColumnForIndexed(
             items = dataLoadedSuccess.items,
-                modifier = Modifier.weight(1f),
+            modifier = Modifier.weight(1f),
             contentPadding = PaddingValues(top = 8.dp)
-        ) { post ->
-            PostRow( post = post,
-                     onItemClicked = onItemClicked
+        ) { index, post ->
+            PostRow(
+                index = index,
+                post = post,
+                onItemClicked = onItemClicked
             )
         }
     }

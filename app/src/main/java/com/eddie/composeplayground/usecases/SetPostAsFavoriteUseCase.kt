@@ -6,16 +6,15 @@ import com.eddie.composeplayground.uistates.UiStates.UiPost
 import javax.inject.Inject
 
 interface SetPostAsFavoriteUseCase {
-    fun execute(postItems: UiStates, uiPost: UiPost): UiStates
+    fun execute(postItems: UiStates, position: Int): UiStates
 }
 
 class SetPostAsFavoriteUseCaseImpl
 @Inject internal constructor(): SetPostAsFavoriteUseCase {
 
-    override fun execute(postItems: UiStates, uiPost: UiPost): UiStates {
+    override fun execute(postItems: UiStates, position: Int): UiStates {
         if(postItems is UiStates.LoadSuccess) {
             return postItems.also {
-                val position = it.items.indexOf(uiPost)
                 it.items[position].icon = Favorite
             }
         } else {

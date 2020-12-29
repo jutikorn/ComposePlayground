@@ -28,8 +28,9 @@ import com.eddie.composeplayground.uistates.UiStates.UiPost
 
 @Composable
 fun PostRow(
+    index: Int,
     post: UiPost,
-    onItemClicked: (UiPost) -> Unit,
+    onItemClicked: (Int) -> Unit,
 ) {
     var vectorAsset by remember { mutableStateOf(post.icon.vectorAsset ) }
     Row(
@@ -37,7 +38,7 @@ fun PostRow(
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
             .clickable {
-                onItemClicked(post)
+                onItemClicked(index)
                 if (vectorAsset == Icons.Default.FavoriteBorder) {
                     vectorAsset = Icons.Default.Favorite
                 }
@@ -76,6 +77,7 @@ fun PostBody(post: UiPost) {
 @Composable
 fun PreviewPostRow() {
     PostRow(
+        index = 0,
         post = UiPost("Some title", "quia et suscipit\\nsuscipit recusandae consequuntur expedita et cum\\nreprehenderit molestiae ut ut quas totam\\nnostrum rerum est autem sunt rem eveniet architecto"),
         onItemClicked = {}
     )

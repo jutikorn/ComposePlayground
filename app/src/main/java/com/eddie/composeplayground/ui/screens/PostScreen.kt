@@ -17,7 +17,7 @@ import com.eddie.composeplayground.uistates.UiStates.UiPost
 @Composable
 fun PostScreen(
     uiStates: UiStates,
-    onItemClick: (UiPost) -> Unit,
+    onItemClick: (Int) -> Unit,
     onRefresh: () -> Unit
 ) {
     ComposePlaygroundTheme {
