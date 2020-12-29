@@ -1,6 +1,5 @@
 package com.eddie.composeplayground.ui.screens
 
-import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyColumnFor
@@ -9,8 +8,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
 import com.eddie.composeplayground.ui.PostRow
-import com.eddie.composeplayground.uistates.UiStates.LoadSuccess
-import com.eddie.composeplayground.uistates.UiStates.UiPost
+import com.eddie.composeplayground.uistates.UiState.LoadSuccess
+import com.eddie.composeplayground.uistates.UiState.UiPost
 
 @Composable
 fun PostsScreenDataLoadingSuccess(

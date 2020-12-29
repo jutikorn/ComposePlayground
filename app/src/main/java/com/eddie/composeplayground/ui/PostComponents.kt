@@ -24,7 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
-import com.eddie.composeplayground.uistates.UiStates.UiPost
+import com.eddie.composeplayground.uistates.UiState.UiPost
 
 @Composable
 fun PostRow(

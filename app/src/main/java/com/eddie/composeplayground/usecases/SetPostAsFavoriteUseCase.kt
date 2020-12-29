@@ -1,19 +1,19 @@
 package com.eddie.composeplayground.usecases
 
 import com.eddie.composeplayground.ui.PostIcons.Favorite
-import com.eddie.composeplayground.uistates.UiStates
-import com.eddie.composeplayground.uistates.UiStates.UiPost
+import com.eddie.composeplayground.uistates.UiState
+import com.eddie.composeplayground.uistates.UiState.UiPost
 import javax.inject.Inject
 
 interface SetPostAsFavoriteUseCase {
-    fun execute(postItems: UiStates, uiPost: UiPost): UiStates
+    fun execute(postItems: UiState?, uiPost: UiPost): UiState
 }
 
 class SetPostAsFavoriteUseCaseImpl
 @Inject internal constructor(): SetPostAsFavoriteUseCase {
 
-    override fun execute(postItems: UiStates, uiPost: UiPost): UiStates {
-        if(postItems is UiStates.LoadSuccess) {
+    override fun execute(postItems: UiState?, uiPost: UiPost): UiState {
+        if(postItems is UiState.LoadSuccess) {
             return postItems.also {
                 val position = it.items.indexOf(uiPost)
                 it.items[position].icon = Favorite

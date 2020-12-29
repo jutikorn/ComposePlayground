@@ -1,17 +1,12 @@
 package com.eddie.composeplayground
 
-import android.util.Log
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.eddie.composeplayground.uistates.UiStates
-import com.eddie.composeplayground.uistates.UiStates.LoadSuccess
-import com.eddie.composeplayground.uistates.UiStates.Loading
-import com.eddie.composeplayground.uistates.UiStates.UiPost
+import com.eddie.composeplayground.uistates.UiState
+import com.eddie.composeplayground.uistates.UiState.Loading
+import com.eddie.composeplayground.uistates.UiState.UiPost
 import com.eddie.composeplayground.usecases.GetPostItemsUseCase
 import com.eddie.composeplayground.usecases.RemovePostFromFavoriteUseCase
 import com.eddie.composeplayground.usecases.SetPostAsFavoriteUseCase
@@ -24,21 +19,24 @@ class PostsViewModel @Inject internal constructor(
     private val removePostFromFavoriteUseCase: RemovePostFromFavoriteUseCase
 ): ViewModel() {
 
-    var postItems: UiStates by mutableStateOf(Loading)
-        private set
+    private val _postItems: MutableLiveData<UiState> by lazy {
+        MutableLiveData<UiState>(Loading)
+    }
+    val postItems: LiveData<UiState>
+        get() = _postItems
 
     fun getPosts() {
         viewModelScope.launch {
-            postItems = getPostItemsUseCase.execute()
+            _postItems.value = getPostItemsUseCase.execute()
         }
     }
 
     fun setAsFavorite(uiPost: UiPost) {
-        postItems = setPostAsFavoriteUseCase.execute(postItems,
+        _postItems.value = setPostAsFavoriteUseCase.execute(postItems.value,
             uiPost)
     }
 
     fun removeFromFavorite(position: Int) {
-        postItems = removePostFromFavoriteUseCase.execute(postItems, position)
+        _postItems.value = removePostFromFavoriteUseCase.execute(postItems.value, position)
     }
 }

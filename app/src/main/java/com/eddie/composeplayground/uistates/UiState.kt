@@ -2,11 +2,11 @@ package com.eddie.composeplayground.uistates
 
 import com.eddie.composeplayground.ui.PostIcons
 
-sealed class UiStates {
-    object Loading: UiStates()
-    object EmptyItem: UiStates()
+sealed class UiState {
+    object Loading: UiState()
+    object EmptyItem: UiState()
 
-    sealed class ConnectionError: UiStates() {
+    sealed class ConnectionError: UiState() {
         object NoInternet: ConnectionError()
         object ServerError: ConnectionError()
     }
@@ -15,9 +15,9 @@ sealed class UiStates {
         val title: String,
         val body: String,
         var icon: PostIcons = PostIcons.Default
-    ): UiStates()
+    ): UiState()
 
     data class LoadSuccess(
         var items: List<UiPost>
-    ): UiStates()
+    ): UiState()
 }
